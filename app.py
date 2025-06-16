@@ -4,20 +4,19 @@ import time
 
 app = Flask(__name__)
 
-data_store=[]
+# In-memory data store
+data_store = []
 
 # GET endpoint - config fetch
-
 @app.route('/get-config', methods=['GET'])
 def get_config():
     config = {
         "fan": "off",
         "threshold": 30
     }
-    return jsonify(config)  # This ensures response is JSON
+    return jsonify(config)
 
-# POST endpoint - send sensor data
-
+# POST endpoint - receive data
 @app.route('/send-data', methods=['POST'])
 def receive_data():
     try:
@@ -40,8 +39,12 @@ def receive_data():
         print("Error in /send-data:", str(e))
         return "Internal server error", 500
 
-# Run the app on Render
+# NEW: GET endpoint - view stored data
+@app.route('/get-data', methods=['GET'])
+def get_data():
+    return jsonify(data_store)
 
+# Start app
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))  # Render uses PORT env var
+    port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
