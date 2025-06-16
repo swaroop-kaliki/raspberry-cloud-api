@@ -27,14 +27,18 @@ def receive_data():
             return "Invalid JSON!", 400
 
         print("Received from Raspberry Pi:", data)
-    # Save to memory
-    data_store.append({
-        "timestamp": time.strftime('%Y-%m-%d %H:%M:%S'),
-        "temperature": data.get("temperature"),
-        "humidity": data.get("humidity")
-    })
 
-    return "Data received!", 200
+        data_store.append({
+            "timestamp": time.strftime('%Y-%m-%d %H:%M:%S'),
+            "temperature": data.get("temperature"),
+            "humidity": data.get("humidity")
+        })
+
+        return "Data received!", 200
+
+    except Exception as e:
+        print("Error in /send-data:", str(e))
+        return "Internal server error", 500
 
 # Run the app on Render
 
