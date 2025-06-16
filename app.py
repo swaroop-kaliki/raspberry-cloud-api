@@ -22,13 +22,11 @@ def receive_data():
     try:
         data = request.get_json()
         if data is None:
-            print("No JSON received in request!")
             return "Invalid JSON!", 400
 
         print("Received from Raspberry Pi:", data)
 
         data_store.append({
-            "timestamp": time.strftime('%Y-%m-%d %H:%M:%S'),
             "temperature": data.get("temperature"),
             "humidity": data.get("humidity")
         })
