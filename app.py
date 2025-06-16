@@ -3,9 +3,10 @@ import os
 
 app = Flask(__name__)
 
-# ---------------------------
+data_store=[]
+
 # GET endpoint - config fetch
-# ---------------------------
+
 @app.route('/get-config', methods=['GET'])
 def get_config():
     config = {
@@ -14,10 +15,8 @@ def get_config():
     }
     return jsonify(config)  # This ensures response is JSON
 
-
-# ---------------------------
 # POST endpoint - send sensor data
-# ---------------------------
+
 @app.route('/send-data', methods=['POST'])
 def receive_data():
     data = request.get_json()
@@ -32,9 +31,8 @@ def receive_data():
 
     return "Data received!", 200
 
-# ---------------------------
 # Run the app on Render
-# ---------------------------
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))  # Render uses PORT env var
     app.run(host="0.0.0.0", port=port)
