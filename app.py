@@ -41,6 +41,10 @@ def receive_data():
 @app.route('/get-data', methods=['GET'])
 def get_data():
     return jsonify(data_store)
+@app.route('/clear-data', methods=['GET'])
+def clear_data():
+    data_store.clear()
+    return "Data store cleared!", 200
 
 # Start app
 if __name__ == "__main__":
