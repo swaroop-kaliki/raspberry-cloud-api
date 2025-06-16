@@ -20,9 +20,13 @@ def get_config():
 
 @app.route('/send-data', methods=['POST'])
 def receive_data():
-    data = request.get_json()
-    print("Received from Raspberry Pi:", data)
+    try:
+        data = request.get_json()
+        if data is None:
+            print("No JSON received in request!")
+            return "Invalid JSON!", 400
 
+        print("Received from Raspberry Pi:", data)
     # Save to memory
     data_store.append({
         "timestamp": time.strftime('%Y-%m-%d %H:%M:%S'),
