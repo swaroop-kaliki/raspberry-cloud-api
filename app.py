@@ -1,35 +1,21 @@
 from flask import Flask, request, jsonify
 import os
-import time
 
 app = Flask(__name__)
 
 # In-memory data store
 data_store = []
 
-# GET endpoint - config fetch
-@app.route('/get-config', methods=['GET'])
-def get_config():
-    config = {
-        "fan": "off",
-        "threshold": 30
-    }
-    return jsonify(config)
-
-# POST endpoint - receive data
 @app.route('/send-data', methods=['POST'])
 def receive_data():
     try:
         data = request.get_json()
-        if data is None:
-            return "Invalid JSON!", 400
+        if not data or not isinstance(data, list):
+            return "Invalid JSON format! Expected a list.", 400
 
-        print("Received from Raspberry Pi:", data)
-
-        data_store.append({
-            "temperature": data.get("temperature"),
-            "humidity": data.get("humidity")
-        })
+        for entry in data:
+            print("Received entry:", entry)
+            data_store.append(entry)
 
         return "Data received!", 200
 
@@ -37,16 +23,22 @@ def receive_data():
         print("Error in /send-data:", str(e))
         return "Internal server error", 500
 
-# NEW: GET endpoint - view stored data
 @app.route('/get-data', methods=['GET'])
 def get_data():
     return jsonify(data_store)
+
 @app.route('/clear-data', methods=['GET'])
 def clear_data():
     data_store.clear()
     return "Data store cleared!", 200
 
-# Start app
+@app.route('/get-config', methods=['GET'])
+def get_config():
+    return jsonify({
+        "fan": "off",
+        "threshold": 30
+    })
+
 if __name__ == "__main__":
     port = int(os.environ.get("PORT", 5000))
     app.run(host="0.0.0.0", port=port)
